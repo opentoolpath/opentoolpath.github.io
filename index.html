@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenToolpath (OTP) — Open Standard for Multi-Axis Toolpaths & Motion Containers</title>
+  <meta name="description" content="OpenToolpath (OTP) v1.0 is the open, vendor-neutral container and motion interchange standard for subtractive, additive, robotic, and hybrid manufacturing.">
+  <link rel="icon" type="image/svg+xml" href="opentoolpath-logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --bg-card: #111827;
+      --bg-card-hover: #162238;
+      --border: #1f293d;
+      --border-accent: #2563eb;
+      --primary: #38bdf8;
+      --primary-glow: rgba(56, 189, 248, 0.15);
+      --accent: #f97316;
+      --success: #10b981;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--primary); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: #7dd3fc; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      background: rgba(11, 15, 25, 0.85);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--text);
+    }
+    .logo img { width: 34px; height: 34px; }
+    .logo span.badge {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    nav { display: flex; gap: 1.75rem; align-items: center; font-size: 0.95rem; font-weight: 500; }
+    nav a { color: var(--text-muted); }
+    nav a:hover { color: var(--text); }
+    nav a.highlight {
+      color: #0b0f19;
+      background: var(--primary);
+      padding: 0.45rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    nav a.highlight:hover { background: #7dd3fc; color: #0b0f19; }
+
+    .hero {
+      padding: 5rem 2rem 3rem;
+      max-width: 1240px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--border);
+      padding: 0.35rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+    h1 span.gradient {
+      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 780px;
+      margin: 0 auto 2.5rem;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #0b0f19;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+    .btn-primary:hover {
+      background: #7dd3fc;
+      transform: translateY(-1px);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.3);
+    }
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: #3b82f6;
+    }
+
+    /* Embedded Viewer Frame */
+    .viewer-showcase {
+      max-width: 1240px;
+      margin: 0 auto 5rem;
+      padding: 0 2rem;
+    }
+
+    .viewer-frame-container {
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .viewer-header {
+      background: #111827;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+    .viewer-header .dots { display: flex; gap: 6px; }
+    .viewer-header .dot { width: 10px; height: 10px; border-radius: 50%; background: #374151; }
+    .viewer-header .dot.red { background: #ef4444; }
+    .viewer-header .dot.yellow { background: #f59e0b; }
+    .viewer-header .dot.green { background: #10b981; }
+
+    iframe.viewer-embed {
+      width: 100%;
+      height: 620px;
+      border: none;
+      display: block;
+    }
+
+    /* Invariants Grid */
+    .section-title {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+    .section-title h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    .section-title p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      max-width: 1240px;
+      margin: 0 auto 5rem;
+      padding: 0 2rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.2s;
+    }
+    .card:hover {
+      border-color: #3b82f6;
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 1.25rem;
+      display: inline-block;
+    }
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .card code {
+      background: #1e293b;
+      color: var(--primary);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    /* Samples Section */
+    .samples-section {
+      background: rgba(17, 24, 39, 0.4);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 5rem 2rem;
+    }
+    .samples-container {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+    .sample-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2.5rem;
+    }
+    .sample-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sample-item h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    .sample-item p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+    .sample-download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+      background: #1e293b;
+      color: var(--primary);
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+    .sample-download:hover {
+      background: var(--primary);
+      color: #0b0f19;
+    }
+
+    /* Footer */
+    footer {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 4rem 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); }
+    footer a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-container">
+      <div class="logo">
+        <img src="opentoolpath-logo.svg" alt="OpenToolpath Mark">
+        <span>OpenToolpath</span>
+        <span class="badge">v1.0 Standard</span>
+      </div>
+      <nav>
+        <a href="#showcase">3D Viewer</a>
+        <a href="https://github.com/opentoolpath/spec" target="_blank" rel="noopener">Specification</a>
+        <a href="#invariants">Theorems</a>
+        <a href="#sdks">Reference SDKs</a>
+        <a href="#samples">Samples</a>
+        <a href="https://github.com/opentoolpath" target="_blank" rel="noopener">GitHub</a>
+        <a href="viewer/" class="highlight" target="_blank">Launch Fullscreen</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-badge">
+        <span>Ø Normative Standard</span>
+        <span>•</span>
+        <span>Lean 4 Formally Verified</span>
+      </div>
+      <h1>
+        The Universal Standard for<br>
+        <span class="gradient">Multi-Axis Toolpaths & Motion Containers</span>
+      </h1>
+      <p>
+        Vendor-neutral, bitwise-deterministic motion container format (<code>.otp</code>) for 
+        5-axis milling, industrial robotics, wire EDM, additive manufacturing, and hybrid cells.
+      </p>
+
+      <div class="hero-actions">
+        <a href="viewer/" target="_blank" class="btn btn-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          Open 3D Web Viewer Demo
+        </a>
+        <a href="https://github.com/opentoolpath/spec" target="_blank" class="btn btn-secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Read Normative Spec
+        </a>
+      </div>
+    </section>
+
+    <!-- Interactive 3D Viewer Showcase -->
+    <section class="viewer-showcase" id="showcase">
+      <div class="viewer-frame-container">
+        <div class="viewer-header">
+          <div class="dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <span>Interactive 3D WebAssembly & WebGL Visualizer (viewer.opentoolpath.org)</span>
+          <a href="viewer/" target="_blank" style="color: var(--primary);">Open Fullscreen ↗</a>
+        </div>
+        <iframe class="viewer-embed" src="viewer/" title="OpenToolpath 3D Web Viewer"></iframe>
+      </div>
+    </section>
+
+    <!-- Core Invariants -->
+    <section class="section-title" id="invariants">
+      <h2>Formally Verified & Mathematically Rigorous</h2>
+      <p>OpenToolpath is backed by formal Lean 4 theorems and the non-negotiable principle of zero silent drops.</p>
+    </section>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">📐</div>
+        <h3>Theorem I6 & I7: ZYZ Euler Invariance</h3>
+        <p>
+          Proves exact-real round-trip recovery of 5/6-axis unit tool vectors through ZYZ Euler angles, 
+          strictly independent of the free roll spin angle <code>rz2</code>.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">⭕</div>
+        <h3>Theorem I8: Arc Midpoint Sweep</h3>
+        <p>
+          Intermediate circular arc midpoint construction mathematically bisects the signed sweep 
+          and preserves the exact radius &rho;, eliminating robot circular drift.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <h3>Byte-Accurate Container</h3>
+        <p>
+          PKZIP 2.04g archive with uncompressed 32-byte <code>mimetype</code> at byte offset 30 and 
+          SHA-256 cryptographic digests in <code>manifest.json</code> for instant file(1) detection and tamper protection.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <h3>Refuse-Never-Clamp</h3>
+        <p>
+          Zero silent drops. Parsers and post-processors reject invalid or out-of-envelope moves with explicit 
+          diagnostic records rather than silently clamping coordinates.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>Tiered Multi-Payload</h3>
+        <p>
+          Supports JSON text wire interchange (<code>toolpath.json</code>), Arrow columnar binary (<code>toolpath.dry0</code>), 
+          and FlatBuffers streaming binary (<code>toolpath.dry1</code>).
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">🌐</div>
+        <h3>Multi-Domain Kinematics</h3>
+        <p>
+          Unifies subtractive 5-axis milling, industrial 6-axis robotics (ABB, KUKA, Fanuc, UR), 
+          additive FFF/DED, and laser cutting in a single schema.
+        </p>
+      </div>
+    </div>
+
+    <!-- Ecosystem & Reference SDKs -->
+    <section class="section-title" id="sdks">
+      <h2>Reference Implementations & Integrations</h2>
+      <p>Complete open-source ecosystem from zero-dependency reference crates to CAM post-processors.</p>
+    </section>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>Rust Reference Crate</h3>
+        <p><code>opentoolpath/otp-rs</code> — Zero-dependency pure-Rust engine for package container generation, parsing, and streaming validation.</p>
+        <div style="margin-top: 1rem;"><a href="https://github.com/opentoolpath/otp-rs" target="_blank">View on GitHub →</a></div>
+      </div>
+
+      <div class="card">
+        <h3>Python Reference SDK</h3>
+        <p><code>pip install opentoolpath</code> — High-level Python SDK with native Apache Arrow, Polars, and NumPy zero-copy analytical interop.</p>
+        <div style="margin-top: 1rem;"><a href="https://github.com/opentoolpath/otp-py" target="_blank">View on GitHub →</a></div>
+      </div>
+
+      <div class="card">
+        <h3>Autodesk Fusion 360</h3>
+        <p><code>opentoolpath/fusion360-otp</code> — Native CAM post-processor and 1-click Python Add-In to export <code>.otp</code> packages with tooling catalogs.</p>
+        <div style="margin-top: 1rem;"><a href="https://github.com/opentoolpath/fusion360-otp" target="_blank">View on GitHub →</a></div>
+      </div>
+
+      <div class="card">
+        <h3>IRBCAM Robotics Plugin</h3>
+        <p><code>opentoolpath/irbcam-plugin</code> — Native 1-click <code>.otp</code> import for multi-robot machining simulation with Hokarob IRBCAM.</p>
+        <div style="margin-top: 1rem;"><a href="https://github.com/opentoolpath/irbcam-plugin" target="_blank">View on GitHub →</a></div>
+      </div>
+
+      <div class="card">
+        <h3>Conformance Suite</h3>
+        <p><code>opentoolpath/conformance</code> — Official oracle test vectors and independent validation tooling certifying implementation compliance.</p>
+        <div style="margin-top: 1rem;"><a href="https://github.com/opentoolpath/conformance" target="_blank">View on GitHub →</a></div>
+      </div>
+
+      <div class="card">
+        <h3>Dry Engine</h3>
+        <p><code>dmytro-yemelianov/dry</code> — Native <code>dry emit --format otp</code> with bit-identical binary generation across native and WASM.</p>
+        <div style="margin-top: 1rem;"><a href="https://github.com/dmytro-yemelianov/dry" target="_blank">View on GitHub →</a></div>
+      </div>
+    </div>
+
+    <!-- Sample Files -->
+    <section class="samples-section" id="samples">
+      <div class="samples-container">
+        <div class="section-title" style="margin-bottom: 1.5rem;">
+          <h2>Conforming Sample Packages</h2>
+          <p>Download and test valid OpenToolpath (.otp) packages directly in the 3D Viewer or your own toolchain.</p>
+        </div>
+
+        <div class="sample-grid">
+          <div class="sample-item">
+            <div>
+              <h4>5-Axis Impeller Blade</h4>
+              <p>Continuous simultaneous 5-axis continuous spiral milling with unit orientation vectors.</p>
+            </div>
+            <a href="samples/five_axis_impeller.otp" class="sample-download" download>
+              Download .otp (2.0 KB)
+            </a>
+          </div>
+
+          <div class="sample-item">
+            <div>
+              <h4>5-Axis Compound Drape</h4>
+              <p>5-axis surface drape with unit dome normal vectors and rotary motion words.</p>
+            </div>
+            <a href="samples/five_axis_drape.otp" class="sample-download" download>
+              Download .otp (2.3 KB)
+            </a>
+          </div>
+
+          <div class="sample-item">
+            <div>
+              <h4>Precision Arcs (CW & CCW)</h4>
+              <p>Bi-directional circular arcs conforming to Theorem I8 midpoint sweep preservation.</p>
+            </div>
+            <a href="samples/precision_arcs.otp" class="sample-download" download>
+              Download .otp (2.0 KB)
+            </a>
+          </div>
+
+          <div class="sample-item">
+            <div>
+              <h4>3D Continuous Spline</h4>
+              <p>NURBS / cubic spline trajectory for non-planar additive bead deposition.</p>
+            </div>
+            <a href="samples/continuous_spline.otp" class="sample-download" download>
+              Download .otp (2.0 KB)
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <img src="opentoolpath-logo.svg" alt="OpenToolpath" width="24" height="24">
+      <span>&copy; 2026 OpenToolpath Initiative Contributors. Licensed under Apache-2.0.</span>
+    </div>
+    <div style="display: flex; gap: 1.5rem;">
+      <a href="https://github.com/opentoolpath/spec" target="_blank">Specification</a>
+      <a href="https://github.com/opentoolpath/conformance" target="_blank">Conformance</a>
+      <a href="https://github.com/opentoolpath/viewer" target="_blank">Viewer Source</a>
+      <a href="https://github.com/opentoolpath" target="_blank">GitHub Org</a>
+    </div>
+  </footer>
+
+</body>
+</html>

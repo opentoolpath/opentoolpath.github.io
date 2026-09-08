@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080D1A" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+
+    <!-- Electric Cyan Gradient for the Ø mark -->
+    <linearGradient id="cyanGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00C0FF" />
+      <stop offset="50%" stop-color="#00E5FF" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+
+    <!-- Subtle Glow Filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Dark Rounded Square / Icon Container -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+
+  <!-- Outer Technical Reticle Guide (Subtle) -->
+  <circle cx="256" cy="256" r="196" fill="none" stroke="#1E293B" stroke-width="2" stroke-dasharray="6 6" opacity="0.4" />
+
+  <!-- The "O" Circle (Diameter / Circular Workpiece) -->
+  <circle cx="256" cy="256" r="142" fill="none" stroke="url(#cyanGrad)" stroke-width="26" filter="url(#glow)" />
+
+  <!-- The "Ø" Diagonal Toolpath Slash (Cutting clean through at 45 degrees) -->
+  <line x1="112" y1="400" x2="400" y2="112" stroke="url(#cyanGrad)" stroke-width="26" stroke-linecap="round" filter="url(#glow)" />
+</svg>
