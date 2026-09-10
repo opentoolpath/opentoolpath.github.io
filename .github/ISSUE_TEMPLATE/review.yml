@@ -1,0 +1,20 @@
+name: Review a proposal or ask a question
+description: Challenge an assumption, suggest a smaller option, or ask how to contribute.
+title: "Discussion: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The scope and development process are proposals, not adopted rules. Feedback is welcome from readers and non-voting participants. Posting does not imply endorsement.
+  - type: textarea
+    id: question
+    attributes:
+      label: Question or feedback
+      description: Link to the paragraph or proposal if applicable; introductory questions are also welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternative
+    attributes:
+      label: Alternative, evidence or example (optional)
+      description: Explain what would help, what may be missing, or a simpler approach.
