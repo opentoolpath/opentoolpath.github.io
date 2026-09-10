@@ -1,590 +1,162 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OpenToolpath (OTP) — Open Standard for Multi-Axis Toolpaths & Motion Containers</title>
-  <meta name="description" content="OpenToolpath (OTP) v1.0 is the open, vendor-neutral container and motion interchange standard for subtractive, additive, robotic, and hybrid manufacturing.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenToolpath — Shaping toolpath exchange together</title>
+  <meta name="description" content="An early-stage initiative to explore toolpath exchange between independent producers and consumers. Bring a use case, review the scope, and help shape the work.">
+  <meta name="theme-color" content="#0b1018">
+  <meta property="og:title" content="OpenToolpath — Shaping toolpath exchange together">
+  <meta property="og:description" content="Discussion stage. An invitation to producers, consumers and researchers to define a small, useful toolpath exchange specification together.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://opentoolpath.github.io/">
+  <link rel="canonical" href="https://opentoolpath.github.io/">
   <link rel="icon" type="image/svg+xml" href="opentoolpath-logo.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #0b0f19;
-      --bg-card: #111827;
-      --bg-card-hover: #162238;
-      --border: #1f293d;
-      --border-accent: #2563eb;
-      --primary: #38bdf8;
-      --primary-glow: rgba(56, 189, 248, 0.15);
-      --accent: #f97316;
-      --success: #10b981;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-sans);
-      line-height: 1.6;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a { color: var(--primary); text-decoration: none; transition: color 0.2s; }
-    a:hover { color: #7dd3fc; }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: blur(12px);
-      background: rgba(11, 15, 25, 0.85);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-container {
-      max-width: 1240px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 2rem;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      font-weight: 800;
-      font-size: 1.25rem;
-      color: var(--text);
-    }
-    .logo img { width: 34px; height: 34px; }
-    .logo span.badge {
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--primary);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      font-size: 0.72rem;
-      padding: 0.15rem 0.5rem;
-      border-radius: 9999px;
-      font-weight: 600;
-    }
-
-    nav { display: flex; gap: 1.75rem; align-items: center; font-size: 0.95rem; font-weight: 500; }
-    nav a { color: var(--text-muted); }
-    nav a:hover { color: var(--text); }
-    nav a.highlight {
-      color: #0b0f19;
-      background: var(--primary);
-      padding: 0.45rem 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-    }
-    nav a.highlight:hover { background: #7dd3fc; color: #0b0f19; }
-
-    .hero {
-      padding: 5rem 2rem 3rem;
-      max-width: 1240px;
-      margin: 0 auto;
-      text-align: center;
-      position: relative;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(30, 41, 59, 0.7);
-      border: 1px solid var(--border);
-      padding: 0.35rem 1rem;
-      border-radius: 9999px;
-      font-size: 0.82rem;
-      font-family: var(--font-mono);
-      color: var(--primary);
-      margin-bottom: 1.5rem;
-    }
-
-    h1 {
-      font-size: clamp(2.4rem, 5vw, 4rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-      margin-bottom: 1.25rem;
-    }
-    h1 span.gradient {
-      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      color: var(--text-muted);
-      max-width: 780px;
-      margin: 0 auto 2.5rem;
-      font-weight: 400;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 3.5rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.75rem;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-primary {
-      background: var(--primary);
-      color: #0b0f19;
-      box-shadow: 0 0 20px var(--primary-glow);
-    }
-    .btn-primary:hover {
-      background: #7dd3fc;
-      transform: translateY(-1px);
-      box-shadow: 0 0 25px rgba(56, 189, 248, 0.3);
-    }
-    .btn-secondary {
-      background: var(--bg-card);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-secondary:hover {
-      background: var(--bg-card-hover);
-      border-color: #3b82f6;
-    }
-
-    /* Embedded Viewer Frame */
-    .viewer-showcase {
-      max-width: 1240px;
-      margin: 0 auto 5rem;
-      padding: 0 2rem;
-    }
-
-    .viewer-frame-container {
-      background: #000;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-      position: relative;
-    }
-
-    .viewer-header {
-      background: #111827;
-      padding: 0.75rem 1.25rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.85rem;
-      font-family: var(--font-mono);
-      color: var(--text-muted);
-    }
-    .viewer-header .dots { display: flex; gap: 6px; }
-    .viewer-header .dot { width: 10px; height: 10px; border-radius: 50%; background: #374151; }
-    .viewer-header .dot.red { background: #ef4444; }
-    .viewer-header .dot.yellow { background: #f59e0b; }
-    .viewer-header .dot.green { background: #10b981; }
-
-    iframe.viewer-embed {
-      width: 100%;
-      height: 620px;
-      border: none;
-      display: block;
-    }
-
-    /* Invariants Grid */
-    .section-title {
-      text-align: center;
-      margin-bottom: 3.5rem;
-    }
-    .section-title h2 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      margin-bottom: 0.75rem;
-      letter-spacing: -0.02em;
-    }
-    .section-title p {
-      color: var(--text-muted);
-      font-size: 1.1rem;
-      max-width: 650px;
-      margin: 0 auto;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.5rem;
-      max-width: 1240px;
-      margin: 0 auto 5rem;
-      padding: 0 2rem;
-    }
-
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      transition: all 0.2s;
-    }
-    .card:hover {
-      border-color: #3b82f6;
-      background: var(--bg-card-hover);
-      transform: translateY(-2px);
-    }
-    .card-icon {
-      font-size: 2rem;
-      margin-bottom: 1.25rem;
-      display: inline-block;
-    }
-    .card h3 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-      color: var(--text);
-    }
-    .card p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-    .card code {
-      background: #1e293b;
-      color: var(--primary);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-    }
-
-    /* Samples Section */
-    .samples-section {
-      background: rgba(17, 24, 39, 0.4);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 5rem 2rem;
-    }
-    .samples-container {
-      max-width: 1240px;
-      margin: 0 auto;
-    }
-    .sample-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.25rem;
-      margin-top: 2.5rem;
-    }
-    .sample-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .sample-item h4 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-    }
-    .sample-item p {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-bottom: 1.25rem;
-    }
-    .sample-download {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      font-size: 0.85rem;
-      font-family: var(--font-mono);
-      background: #1e293b;
-      color: var(--primary);
-      padding: 0.5rem;
-      border-radius: 6px;
-      font-weight: 600;
-      border: 1px solid rgba(56, 189, 248, 0.2);
-    }
-    .sample-download:hover {
-      background: var(--primary);
-      color: #0b0f19;
-    }
-
-    /* Footer */
-    footer {
-      max-width: 1240px;
-      margin: 0 auto;
-      padding: 4rem 2rem 3rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 2rem;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      border-top: 1px solid var(--border);
-    }
-    footer a { color: var(--text-muted); }
-    footer a:hover { color: var(--text); }
+    :root { color-scheme: dark; --bg:#0b1018; --panel:#111a26; --line:#293646; --ink:#f0f4f8; --muted:#adbac9; --accent:#85ddce; --blue:#a9c9ff; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:100px; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--blue); text-underline-offset:4px; }
+    a:hover { color:var(--accent); }
+    a:focus-visible, summary:focus-visible { outline:3px solid var(--accent); outline-offset:5px; border-radius:3px; }
+    .wrap { max-width:1120px; margin:auto; padding-inline:28px; }
+    .skip { position:absolute; top:-80px; left:20px; z-index:10; background:var(--ink); color:var(--bg); padding:12px; }
+    .skip:focus { top:10px; }
+    header { border-bottom:1px solid var(--line); background:var(--bg); }
+    .nav { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:88px; }
+    .brand { display:flex; align-items:center; gap:12px; color:var(--ink); font-size:19px; font-weight:700; text-decoration:none; }
+    .brand img { width:32px; height:32px; }
+    nav { display:flex; gap:26px; flex-wrap:wrap; font-size:14px; }
+    nav a { color:var(--muted); text-decoration:none; }
+    .hero { padding-block:88px 64px; display:grid; grid-template-columns:1.5fr 1fr; gap:68px; align-items:center; }
+    .eyebrow { color:var(--accent); text-transform:uppercase; letter-spacing:.14em; font-size:11px; font-weight:700; margin:0 0 20px; }
+    .status { display:inline-flex; align-items:center; gap:8px; padding:5px 11px; border:1px solid #34544f; border-radius:4px; color:var(--accent); font-size:12px; margin-bottom:24px; }
+    .status::before { content:""; width:6px; height:6px; border-radius:50%; background:var(--accent); }
+    h1 { font-size:clamp(38px,5.4vw,64px); line-height:1.1; letter-spacing:-.045em; font-weight:650; margin:0 0 24px; }
+    h1 span { color:var(--accent); }
+    .lead { max-width:610px; font-size:18px; color:var(--muted); margin:0 0 28px; }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; }
+    .button { display:inline-flex; justify-content:center; align-items:center; min-height:46px; padding:10px 18px; background:var(--accent); color:var(--bg); border:1px solid var(--accent); border-radius:5px; font-size:14px; font-weight:650; text-decoration:none; }
+    .button:hover { background:#b0eee3; color:var(--bg); }
+    .button.secondary { background:transparent; color:var(--ink); border-color:var(--line); }
+    .button.secondary:hover { border-color:var(--accent); color:var(--accent); }
+    .exchange { border:1px solid var(--line); border-radius:8px; padding:26px; background:linear-gradient(160deg,#142231,var(--panel)); }
+    .exchange .label { margin:0; color:var(--muted); font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+    .exchange strong { display:block; font-size:19px; margin-top:6px; font-weight:550; }
+    .connection { height:91px; display:flex; align-items:center; gap:17px; padding-left:18px; color:var(--accent); font-size:13px; }
+    .connection::before { content:"↓"; font-size:36px; font-weight:200; }
+    .exchange .question { border-top:1px solid var(--line); margin:22px 0 0; padding-top:18px; font-size:13px; color:var(--muted); }
+    .note { border-left:2px solid var(--accent); padding:5px 0 5px 22px; margin:0 0 66px; color:var(--muted); font-size:14px; max-width:900px; }
+    .note strong { color:var(--ink); }
+    section.content { border-top:1px solid var(--line); padding-block:60px; }
+    .section-heading { display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:start; margin-bottom:28px; }
+    h2 { font-size:clamp(26px,3vw,36px); line-height:1.2; letter-spacing:-.025em; font-weight:600; margin:0 0 14px; }
+    h3 { font-size:18px; line-height:1.4; font-weight:600; margin:0 0 12px; }
+    p { margin:0 0 16px; }
+    .muted { color:var(--muted); }
+    .cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .card { border:1px solid var(--line); border-radius:6px; background:var(--panel); padding:24px; }
+    .card p { color:var(--muted); font-size:14px; margin:0; }
+    .number { display:block; color:var(--accent); font:12px/1.4 ui-monospace,monospace; margin-bottom:20px; }
+    .steps { list-style:none; padding:0; margin:28px 0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; counter-reset:step; }
+    .steps li { border-top:2px solid var(--line); padding-top:18px; counter-increment:step; }
+    .steps li::before { content:"0" counter(step); display:block; color:var(--accent); font:12px/1.4 ui-monospace,monospace; margin-bottom:16px; }
+    .steps p { font-size:14px; color:var(--muted); }
+    .resource-links { display:flex; flex-wrap:wrap; gap:12px 24px; font-size:14px; }
+    .participate { display:grid; grid-template-columns:1fr 1fr; gap:42px; }
+    .prompt { margin:0 0 24px; padding:0; list-style:none; }
+    .prompt li { padding:10px 0; border-bottom:1px solid var(--line); color:var(--muted); font-size:14px; }
+    .small { font-size:13px; color:var(--muted); }
+    details { border-top:1px solid var(--line); padding:16px 0; }
+    summary { cursor:pointer; font-weight:550; padding-right:12px; }
+    details p { color:var(--muted); font-size:14px; max-width:840px; margin:14px 0 0; }
+    footer { border-top:1px solid var(--line); padding-block:28px; }
+    footer .wrap { display:flex; gap:20px; justify-content:space-between; flex-wrap:wrap; font-size:12px; color:var(--muted); }
+    footer a { color:var(--muted); }
+    @media (max-width:800px) { .hero { grid-template-columns:1fr; gap:32px; padding-top:50px; } .exchange { max-width:550px; } .section-heading,.participate { grid-template-columns:1fr; gap:12px; } .cards { grid-template-columns:1fr; } .nav { align-items:flex-start; flex-direction:column; gap:12px; padding-block:18px; } nav { gap:20px; } }
+    @media (max-width:520px) { .wrap { padding-inline:20px; } .hero { padding-bottom:38px; } .steps { grid-template-columns:1fr; } section.content { padding-block:42px; } .note { margin-bottom:42px; } .actions { flex-direction:column; align-items:stretch; } nav { gap:12px 18px; font-size:13px; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
   </style>
 </head>
 <body>
-
+  <a class="skip" href="#main">Skip to content</a>
   <header>
-    <div class="nav-container">
-      <div class="logo">
-        <img src="opentoolpath-logo.svg" alt="OpenToolpath Mark">
-        <span>OpenToolpath</span>
-        <span class="badge">v1.0 Standard</span>
-      </div>
-      <nav>
-        <a href="#showcase">3D Viewer</a>
-        <a href="https://github.com/opentoolpath/spec" target="_blank" rel="noopener">Specification</a>
-        <a href="#invariants">Theorems</a>
-        <a href="#sdks">Reference SDKs</a>
-        <a href="#samples">Samples</a>
-        <a href="https://github.com/opentoolpath" target="_blank" rel="noopener">GitHub</a>
-        <a href="viewer/" class="highlight" target="_blank">Launch Fullscreen</a>
+    <div class="wrap nav">
+      <a class="brand" href="#main"><img src="opentoolpath-logo.svg" alt="" width="32" height="32">OpenToolpath</a>
+      <nav aria-label="Main navigation">
+        <a href="#purpose">The problem</a><a href="#process">How to take part</a><a href="#status">Current status</a>
+        <a href="https://github.com/opentoolpath/opentoolpath.github.io/issues">Public discussion ↗</a>
       </nav>
     </div>
   </header>
-
-  <main>
-    <section class="hero">
-      <div class="hero-badge">
-        <span>Ø Normative Standard</span>
-        <span>•</span>
-        <span>Lean 4 Formally Verified</span>
-      </div>
-      <h1>
-        The Universal Standard for<br>
-        <span class="gradient">Multi-Axis Toolpaths & Motion Containers</span>
-      </h1>
-      <p>
-        Vendor-neutral, bitwise-deterministic motion container format (<code>.otp</code>) for 
-        5-axis milling, industrial robotics, wire EDM, additive manufacturing, and hybrid cells.
-      </p>
-
-      <div class="hero-actions">
-        <a href="viewer/" target="_blank" class="btn btn-primary">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-          Open 3D Web Viewer Demo
-        </a>
-        <a href="https://github.com/opentoolpath/spec" target="_blank" class="btn btn-secondary">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          Read Normative Spec
-        </a>
-      </div>
-    </section>
-
-    <!-- Interactive 3D Viewer Showcase -->
-    <section class="viewer-showcase" id="showcase">
-      <div class="viewer-frame-container">
-        <div class="viewer-header">
-          <div class="dots">
-            <span class="dot red"></span>
-            <span class="dot yellow"></span>
-            <span class="dot green"></span>
-          </div>
-          <span>Interactive 3D WebAssembly & WebGL Visualizer (opentoolpath.github.io/viewer)</span>
-          <a href="viewer/" target="_blank" style="color: var(--primary);">Open Fullscreen ↗</a>
-        </div>
-        <iframe class="viewer-embed" src="https://opentoolpath.github.io/viewer/" title="OpenToolpath 3D Web Viewer"></iframe>
-      </div>
-    </section>
-
-    <!-- Core Invariants -->
-    <section class="section-title" id="invariants">
-      <h2>Formally Verified & Mathematically Rigorous</h2>
-      <p>OpenToolpath is backed by formal Lean 4 theorems and the non-negotiable principle of zero silent drops.</p>
-    </section>
-
-    <div class="grid-3">
-      <div class="card">
-        <div class="card-icon">📐</div>
-        <h3>Theorem I6 & I7: ZYZ Euler Invariance</h3>
-        <p>
-          Proves exact-real round-trip recovery of 5/6-axis unit tool vectors through ZYZ Euler angles, 
-          strictly independent of the free roll spin angle <code>rz2</code>.
-        </p>
-      </div>
-
-      <div class="card">
-        <div class="card-icon">⭕</div>
-        <h3>Theorem I8: Arc Midpoint Sweep</h3>
-        <p>
-          Intermediate circular arc midpoint construction mathematically bisects the signed sweep 
-          and preserves the exact radius &rho;, eliminating robot circular drift.
-        </p>
-      </div>
-
-      <div class="card">
-        <div class="card-icon">🔒</div>
-        <h3>Byte-Accurate Container</h3>
-        <p>
-          PKZIP 2.04g archive with uncompressed 32-byte <code>mimetype</code> at byte offset 30 and 
-          SHA-256 cryptographic digests in <code>manifest.json</code> for instant file(1) detection and tamper protection.
-        </p>
-      </div>
-
-      <div class="card">
-        <div class="card-icon">🛡️</div>
-        <h3>Refuse-Never-Clamp</h3>
-        <p>
-          Zero silent drops. Parsers and post-processors reject invalid or out-of-envelope moves with explicit 
-          diagnostic records rather than silently clamping coordinates.
-        </p>
-      </div>
-
-      <div class="card">
-        <div class="card-icon">⚡</div>
-        <h3>Tiered Multi-Payload</h3>
-        <p>
-          Supports JSON text wire interchange (<code>toolpath.json</code>), Arrow columnar binary (<code>toolpath.dry0</code>), 
-          and FlatBuffers streaming binary (<code>toolpath.dry1</code>).
-        </p>
-      </div>
-
-      <div class="card">
-        <div class="card-icon">🌐</div>
-        <h3>Multi-Domain Kinematics</h3>
-        <p>
-          Unifies subtractive 5-axis milling, industrial 6-axis robotics (ABB, KUKA, Fanuc, UR), 
-          additive FFF/DED, and laser cutting in a single schema.
-        </p>
-      </div>
-    </div>
-
-    <!-- Ecosystem & Reference SDKs -->
-    <section class="section-title" id="sdks">
-      <h2>Reference Implementations & Integrations</h2>
-      <p>Complete open-source ecosystem from zero-dependency reference crates to CAM post-processors.</p>
-    </section>
-
-    <div class="grid-3">
-      <div class="card">
-        <h3>Rust Reference Crate</h3>
-        <p><code>opentoolpath/otp-rs</code> — Zero-dependency pure-Rust engine for package container generation, parsing, and streaming validation.</p>
-        <div style="margin-top: 1rem;"><a href="https://github.com/opentoolpath/otp-rs" target="_blank">View on GitHub →</a></div>
-      </div>
-
-      <div class="card">
-        <h3>Python Reference SDK</h3>
-        <p><code>pip install opentoolpath</code> — High-level Python SDK with native Apache Arrow, Polars, and NumPy zero-copy analytical interop.</p>
-        <div style="margin-top: 1rem;"><a href="https://github.com/opentoolpath/otp-py" target="_blank">View on GitHub →</a></div>
-      </div>
-
-      <div class="card">
-        <h3>Autodesk Fusion 360</h3>
-        <p><code>opentoolpath/fusion360-otp</code> — Native CAM post-processor and 1-click Python Add-In to export <code>.otp</code> packages with tooling catalogs.</p>
-        <div style="margin-top: 1rem;"><a href="https://github.com/opentoolpath/fusion360-otp" target="_blank">View on GitHub →</a></div>
-      </div>
-
-      <div class="card">
-        <h3>IRBCAM Robotics Plugin</h3>
-        <p><code>opentoolpath/irbcam-plugin</code> — Native 1-click <code>.otp</code> import for multi-robot machining simulation with Hokarob IRBCAM.</p>
-        <div style="margin-top: 1rem;"><a href="https://github.com/opentoolpath/irbcam-plugin" target="_blank">View on GitHub →</a></div>
-      </div>
-
-      <div class="card">
-        <h3>Conformance Suite</h3>
-        <p><code>opentoolpath/conformance</code> — Official oracle test vectors and independent validation tooling certifying implementation compliance.</p>
-        <div style="margin-top: 1rem;"><a href="https://github.com/opentoolpath/conformance" target="_blank">View on GitHub →</a></div>
-      </div>
-
-      <div class="card">
-        <h3>Dry Engine</h3>
-        <p><code>dmytro-yemelianov/dry</code> — Native <code>dry emit --format otp</code> with bit-identical binary generation across native and WASM.</p>
-        <div style="margin-top: 1rem;"><a href="https://github.com/dmytro-yemelianov/dry" target="_blank">View on GitHub →</a></div>
-      </div>
-    </div>
-
-    <!-- Sample Files -->
-    <section class="samples-section" id="samples">
-      <div class="samples-container">
-        <div class="section-title" style="margin-bottom: 1.5rem;">
-          <h2>Conforming Sample Packages</h2>
-          <p>Download and test valid OpenToolpath (.otp) packages directly in the 3D Viewer or your own toolchain.</p>
-        </div>
-
-        <div class="sample-grid">
-          <div class="sample-item">
-            <div>
-              <h4>5-Axis Turbine Blisk</h4>
-              <p>12 twisted aerodynamic blades on a central hub with continuous tilting 5-axis orientation vectors (4,274 segments).</p>
-            </div>
-            <a href="samples/five_axis_impeller.otp" class="sample-download" download>
-              Download .otp (122 KB)
-            </a>
-          </div>
-
-          <div class="sample-item">
-            <div>
-              <h4>5-Axis Hemispherical Drape</h4>
-              <p>Compound curvature spherical Archimedean surface finishing with outward normal vectors (1,801 segments).</p>
-            </div>
-            <a href="samples/five_axis_drape.otp" class="sample-download" download>
-              Download .otp (72 KB)
-            </a>
-          </div>
-
-          <div class="sample-item">
-            <div>
-              <h4>High-Speed Trochoidal Pocket</h4>
-              <p>High-speed adaptive trochoidal circular loops with multi-level depth clearing passes (3,105 segments).</p>
-            </div>
-            <a href="samples/precision_arcs.otp" class="sample-download" download>
-              Download .otp (32 KB)
-            </a>
-          </div>
-
-          <div class="sample-item">
-            <div>
-              <h4>TPMS Gyroid Lattice</h4>
-              <p>Triply periodic minimal surface gyroid lattice for conformal additive manufacturing (1,569 segments).</p>
-            </div>
-            <a href="samples/continuous_spline.otp" class="sample-download" download>
-              Download .otp (46 KB)
-            </a>
-          </div>
+  <main id="main" class="wrap">
+    <section class="hero" aria-labelledby="intro-title">
+      <div>
+        <span class="status">Discussion stage · Scope open for review</span>
+        <h1 id="intro-title">Shaping toolpath<br>exchange <span>together.</span></h1>
+        <p class="lead">What should a toolpath carry from one application to another? Help define a small, useful shared specification for independent producers and consumers.</p>
+        <div class="actions">
+          <a class="button" href="https://github.com/opentoolpath/opentoolpath.github.io/issues/new?template=use-case.yml">Bring an exchange problem ↗</a>
+          <a class="button secondary" href="#process">Explore the proposed approach</a>
         </div>
       </div>
+      <aside class="exchange" aria-label="The exchange problem">
+        <p class="label">Producer</p><strong>CAM · slicer · path planner</strong>
+        <div class="connection">Geometry, orientation, process intent</div>
+        <p class="label">Consumer</p><strong>Simulation · integration · manufacturing</strong>
+        <p class="question">What information needs to survive the exchange?</p>
+      </aside>
+    </section>
+    <div class="note"><strong>A starting point, not an adopted standard.</strong> The shared scope and governance are still proposals. Earlier independently developed implementations are private pre-alpha experiments; they do not set the requirements for this work.</div>
+
+    <section class="content" id="purpose" aria-labelledby="purpose-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">Start with the need</p><h2 id="purpose-title">Useful exchanges before a larger specification.</h2></div>
+        <p class="muted">The aim is to agree what data means across applications. Producers and consumers choose their own software, algorithms and internal representations. Real examples should establish the smallest common model.</p>
+      </div>
+      <div class="cards">
+        <article class="card"><span class="number">01 / MACHINING</span><h3>From CAM to a consumer</h3><p>Which path geometry, units, coordinate frames and tool information must be preserved for another application to interpret the operation?</p></article>
+        <article class="card"><span class="number">02 / ROBOTICS</span><h3>Beyond position alone</h3><p>When is a tool-axis direction sufficient, and when does a consumer need a complete pose? Bring examples that expose the difference.</p></article>
+        <article class="card"><span class="number">03 / ADDITIVE &amp; SIMULATION</span><h3>Preserving process meaning</h3><p>What timing, deposited quantity, material or energy information does an AM thermal simulator need? Geometry alone may not tell the whole story.</p></article>
+      </div>
+    </section>
+
+    <section class="content" id="process" aria-labelledby="process-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">A proposal for working together</p><h2 id="process-title">Learn, review, decide.<br>Then revise.</h2></div>
+        <p class="muted">The proposed process combines equal participation, visible decision records and recurring review cycles. Its membership rules, voting thresholds and timetable also need agreement. None has been ratified.</p>
+      </div>
+      <ol class="steps">
+        <li><h3>Agree the starting scope</h3><p>Invite affected producers and consumers. Explain the problem, collect small examples and make missing perspectives visible before selecting a design.</p></li>
+        <li><h3>Review decisions in groups</h3><p>Use seasonal work packages, compare smaller alternatives and publish responses to objections. Formal decisions follow the agreed review process.</p></li>
+        <li><h3>Build evidence for an edition</h3><p>Look for independent exchanges, record compatibility and limitations, and publish stable editions only when their review gates are met.</p></li>
+      </ol>
+      <div class="resource-links">
+        <a href="https://github.com/opentoolpath/opentoolpath.github.io/blob/main/development/PROCESS.md">Proposed development process ↗</a>
+        <a href="https://github.com/opentoolpath/opentoolpath.github.io/blob/main/development/ROADMAP.md">Draft roadmap ↗</a>
+        <a href="https://github.com/opentoolpath/opentoolpath.github.io/blob/main/development/DECISIONS.md">Decision &amp; voting matrix ↗</a>
+        <a href="https://github.com/opentoolpath/opentoolpath.github.io/blob/main/development/CHANGELOG.md">Process draft history ↗</a>
+      </div>
+    </section>
+
+    <section class="content" id="participate" aria-labelledby="participate-title">
+      <div class="participate">
+        <div><p class="eyebrow">Your first contribution</p><h2 id="participate-title">Bring a problem.<br>You do not need an SDK.</h2><p class="muted">Producers, consumers, researchers and end users are welcome to contribute a use case, review an assumption or suggest a simpler approach. Participation is not an endorsement of a design.</p><p class="small">The public issue forms below require a GitHub account. Read existing discussions without signing in. Please share only material you have permission to publish.</p></div>
+        <div>
+          <ul class="prompt"><li>Which application produces the path, and which consumes it?</li><li>What information gets lost or needs manual reconstruction?</li><li>Can a small, non-confidential example show the problem?</li><li>What would a successful exchange preserve?</li></ul>
+          <div class="actions"><a class="button" href="https://github.com/opentoolpath/opentoolpath.github.io/issues/new?template=use-case.yml">Share a use case ↗</a><a class="button secondary" href="https://github.com/opentoolpath/opentoolpath.github.io/issues/new?template=review.yml">Review or ask a question ↗</a></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content" id="status" aria-labelledby="status-title">
+      <p class="eyebrow">Status update · 10 September 2026</p><h2 id="status-title">What is available today?</h2>
+      <details open><summary>Discussion drafts, not a standard release</summary><p>This site is an entry point to scope and process discussions. There is no jointly adopted specification edition, ratified governing group or certification program announced here. The roadmap describes proposed work, not promised release dates.</p></details>
+      <details><summary>Why the earlier demos and repository links changed</summary><p>The earlier specification, SDKs, validation tools and integrations were developed independently as one possible approach. Those repositories now remain in the same organization but are private. The embedded viewer and downloadable experimental samples have been removed from this portal.</p><p>Earlier “v1.0”, “normative” and formal-verification wording overstated the shared project's maturity. The experiment is pre-alpha; its internal versions and tests are not evidence of partner approval or a completed standard.</p></details>
+      <details><summary>How the community can help shape the next step</summary><p>The proposal is to begin with open examples and an agreed scope, then use review sessions, documented decisions and revision cycles. New participants should be able to see how their feedback affects the work. No session dates, voting appointments or partner commitments are announced yet.</p></details>
     </section>
   </main>
-
-  <footer>
-    <div style="display: flex; align-items: center; gap: 0.75rem;">
-      <img src="opentoolpath-logo.svg" alt="OpenToolpath" width="24" height="24">
-      <span>&copy; 2026 OpenToolpath Initiative Contributors. Licensed under Apache-2.0.</span>
-    </div>
-    <div style="display: flex; gap: 1.5rem;">
-      <a href="https://github.com/opentoolpath/spec" target="_blank">Specification</a>
-      <a href="https://github.com/opentoolpath/conformance" target="_blank">Conformance</a>
-      <a href="https://github.com/opentoolpath/viewer" target="_blank">Viewer Source</a>
-      <a href="https://github.com/opentoolpath" target="_blank">GitHub Org</a>
-    </div>
-  </footer>
-
+  <footer><div class="wrap"><span>OpenToolpath · A specification initiative in discussion</span><span><a href="https://github.com/opentoolpath/opentoolpath.github.io">Site source</a> · <a href="https://github.com/opentoolpath/opentoolpath.github.io/issues">Questions &amp; feedback</a> · <a href="https://github.com/opentoolpath/opentoolpath.github.io/blob/main/LICENSE">License</a></span></div></footer>
 </body>
 </html>

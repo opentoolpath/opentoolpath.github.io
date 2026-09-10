@@ -1,0 +1,34 @@
+name: Share an exchange problem
+description: Help define the scope with a producer-to-consumer use case.
+title: "Use case: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        OpenToolpath is at the discussion stage. You do not need to adopt an SDK or endorse a design to contribute. This issue is public: share only non-confidential material you have permission to publish.
+  - type: textarea
+    id: exchange
+    attributes:
+      label: What needs to be exchanged?
+      description: Which application produces the toolpath, which consumes it, and for what purpose? Generic descriptions are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is difficult today?
+      description: Describe missing information, ambiguity or manual reconstruction.
+    validations:
+      required: true
+  - type: textarea
+    id: success
+    attributes:
+      label: What would a successful exchange preserve?
+      description: Include geometry, units, orientation, timing or process quantities where relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Small example or additional context (optional)
+      description: A sanitized example or explanation is enough. Do not upload confidential files or personal contact details.
